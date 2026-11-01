@@ -1,0 +1,51 @@
+# XcodeGen 설정. CI 가 이걸로 RdpApp.xcodeproj 를 만든다(scripts/build-deps.sh 가 Vendor/ 를 먼저 채워야 한다).
+name: RdpApp
+options:
+  deploymentTarget:
+    iOS: "16.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+targets:
+  RdpApp:
+    type: application
+    platform: iOS
+    sources:
+      - path: RdpApp
+    settings:
+      base:
+        PRODUCT_NAME: RdpApp
+        PRODUCT_BUNDLE_IDENTIFIER: io.github.damon0523.rdpapp
+        MARKETING_VERSION: "0.1"
+        CURRENT_PROJECT_VERSION: "1"
+        TARGETED_DEVICE_FAMILY: "1,2"
+        CODE_SIGN_STYLE: Automatic
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: 원격PC
+        # 실행 화면(UILaunchScreen)이 없으면 iOS 가 옛 기기 크기로 줄여 띄운다. 새 화면 크기에 맞게 열리려면 꼭 있어야 한다.
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+        INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad: "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight"
+        INFOPLIST_KEY_NSLocalNetworkUsageDescription: 같은 네트워크에 있는 PC에 연결하려면 로컬 네트워크 접근이 필요합니다.
+        SWIFT_OBJC_BRIDGING_HEADER: RdpApp/RdpApp-Bridging-Header.h
+        HEADER_SEARCH_PATHS:
+          - "$(SRCROOT)/Vendor/include"
+          - "$(SRCROOT)/Vendor/include/freerdp3"
+          - "$(SRCROOT)/Vendor/include/winpr3"
+        LIBRARY_SEARCH_PATHS:
+          - "$(SRCROOT)/Vendor/lib"
+        OTHER_LDFLAGS:
+          - "-lfreerdp-all"
+          - "-lz"
+          - "-liconv"
+          - "-lresolv"
+          - "-lc++"
+    dependencies:
+      - sdk: Security.framework
+      - sdk: SystemConfiguration.framework
+      - sdk: CFNetwork.framework
+      - sdk: CoreFoundation.framework
+    scheme: {}
