@@ -42,6 +42,7 @@ if [ ! -f "$PREFIX/lib/libfreerdp3.a" ]; then
   git clone -q --depth 1 --branch "$FREERDP_VERSION" https://github.com/FreeRDP/FreeRDP.git freerdp
   # 옵션은 upstream client/iOS/cmake/ExternalFreeRDP.cmake 를 따르고, 코덱·오디오·스마트카드처럼
   # 이 앱이 쓰지 않는 것은 끈다. WITH_INTERNAL_RC4/MD4/MD5 가 없으면 Windows 의 NLA(NTLM) 로그인이 실패한다.
+  # 원격 지원(remdesk)은 정적 빌드에서 공용 부분(remdesk_*_header)이 라이브러리에 빠져 링크가 깨지므로 끈다.
   cmake -S freerdp -B freerdp-build -G Ninja \
     -DCMAKE_TOOLCHAIN_FILE="$WORK/freerdp/cmake/ios.toolchain.cmake" \
     -DPLATFORM=OS64 \
@@ -94,7 +95,8 @@ if [ ! -f "$PREFIX/lib/libfreerdp3.a" ]; then
     -DCHANNEL_AUDIN=OFF \
     -DCHANNEL_URBDRC=OFF \
     -DCHANNEL_PRINTER=OFF \
-    -DCHANNEL_SMARTCARD=OFF
+    -DCHANNEL_SMARTCARD=OFF \
+    -DCHANNEL_REMDESK=OFF
   cmake --build freerdp-build -j "$JOBS"
   cmake --install freerdp-build
 fi
